@@ -1678,7 +1678,19 @@ document.addEventListener('DOMContentLoaded', () => {
         type:    typeSelect.value,
         message: document.getElementById('message').value.trim(),
       };
-      const res = await fetch('tables/contacts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      const res = await fetch('https://formspree.io/f/xkoqoprp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          _replyto: data.email,
+          _subject: `【JUUNOお問い合わせ】${data.type || 'その他'} - ${data.name}`,
+          company: data.company,
+          name:    data.name,
+          email:   data.email,
+          type:    data.type,
+          message: data.message,
+        })
+      });
       if (!res.ok) throw new Error();
     } catch {}
 
