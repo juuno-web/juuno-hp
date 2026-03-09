@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JUUNO | 構造設計と知財を核にしたR&D会社</title>
+  <meta name="description" content="JUUNOは、現場課題を構造化し、試作と知財化まで一体で行う研究開発会社です。AI・AR・センシング等を活用した新製品・新サービスの研究開発を行います。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <style>
+/* =============================================
+   JUUNO Corporate Site
+   ============================================= */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-bg:        #08080a;
+  --c-bg-2:      #0f0f12;
+  --c-bg-3:      #16161b;
+  --c-surface:   #1a1a20;
+  --c-surface-2: #22222a;
+  --c-border:    rgba(255,255,255,0.07);
+  --c-border-2:  rgba(255,255,255,0.12);
+  --c-accent:    #5b5fc7;
+  --c-accent-2:  #7b7fd4;
+  --c-accent-3:  #a5a8e8;
+  --c-gold:      #c9a84c;
+  --c-gold-2:    #e8c97a;
+  --c-green:     #2d9e6e;
+  --c-green-2:   #3db888;
+  --c-text:      #dddde8;
+  --c-muted:     #6b6b7e;
+  --c-muted-2:   #8f8fa8;
+  --c-white:     #ffffff;
+  --font-en:     'DM Sans', sans-serif;
+  --font-mono:   'DM Mono', monospace;
+  --font-ja:     'Noto Sans JP', sans-serif;
+  --nav-h:       64px;
+  --radius:      10px;
+  --radius-lg:   18px;
+  --shadow:      0 4px 24px rgba(0,0,0,0.5);
+  --shadow-lg:   0 12px 60px rgba(0,0,0,0.7);
+  --t:           0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: var(--font-ja);
+  background: var(--c-bg);
+  color: var(--c-text);
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; transition: color var(--t); }
+img { display: block; max-width: 100%; }
+ul { list-style: none; }
+
+.container { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+.section { padding: 112px 0; }
+.sp-only { display: none; }
+
+/* ── ナビ ──────────────────────────── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  height: var(--nav-h);
+  transition: background var(--t), box-shadow var(--t);
+}
+.nav.scrolled {
+  background: rgba(8,8,10,0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 1px 0 var(--c-border);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--nav-h);
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+.nav-logo {
+  font-family: var(--font-en);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--c-white);
+}
+.nav-logo span {
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--c-accent-3);
+  border-radius: 50%;
+  margin-left: 3px;
+  vertical-align: super;
+}
+.nav-menu { display: flex; align-items: center; gap: 2rem; }
+.nav-menu a {
+  font-family: var(--font-en);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--c-muted);
+  transition: color var(--t);
+}
+.nav-menu a:hover { color: var(--c-white); }
+.nav-cta {
+  background: var(--c-surface-2) !important;
+  color: var(--c-text) !important;
+  padding: 7px 18px;
+  border-radius: 7px;
+  border: 1px solid var(--c-border-2) !important;
+  font-weight: 500 !important;
+  transition: all var(--t) !important;
+}
+.nav-cta:hover {
+  border-color: rgba(255,255,255,0.25) !important;
+  color: var(--c-white) !important;
+  transform: translateY(-1px);
+}
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px; height: 1.5px;
+  background: var(--c-text);
+  border-radius: 2px;
+  transition: transform var(--t), opacity var(--t);
+}
+.nav-toggle.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-toggle.active span:nth-child(2) { opacity: 0; }
+.nav-toggle.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ── ヒーロー ────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(91,95,199,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91,95,199,0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+.hero-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.12;
+}
+.hero-glow-1 {
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, #5b5fc7, transparent);
+  top: -250px; left: -150px;
+  animation: glow-float 9s ease-in-out infinite;
+}
+.hero-glow-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, #c9a84c, transparent);
+  bottom: -150px; right: -100px;
+  animation: glow-float 11s ease-in-out infinite reverse;
+}
+@keyframes glow-float {
+  0%, 100% { transform: translate(0, 0); }
+  50%       { transform: translate(40px, -50px); }
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+  padding: calc(var(--nav-h) + 16px) 28px 60px;
+  max-width: 820px;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-accent-3);
+  border: 1px solid rgba(91,95,199,0.3);
+  padding: 6px 14px;
+  border-radius: 4px;
+  margin-bottom: 36px;
+  background: rgba(91,95,199,0.06);
+  animation: fade-up 0.6s ease 0s both;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 5px; height: 5px;
+  background: var(--c-accent-3);
+  border-radius: 50%;
+  opacity: 0.8;
+}
+.hero-title {
+  font-family: var(--font-en);
+  font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--c-white);
+  margin-bottom: 12px;
+  animation: fade-up 0.6s ease 0.1s both;
+}
+.hero-title-ja {
+  font-family: var(--font-ja);
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--c-muted-2);
+  line-height: 1.8;
+  margin-bottom: 48px;
+  animation: fade-up 0.6s ease 0.2s both;
+}
+.hero-title-ja em {
+  font-style: normal;
+  color: var(--c-accent-3);
+}
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fade-up 0.6s ease 0.3s both;
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 1;
+  animation: fade-up 0.6s ease 0.6s both;
+}
+.hero-scroll span {
+  display: block;
+  width: 1px; height: 44px;
+  background: linear-gradient(to bottom, transparent, var(--c-muted));
+  animation: scroll-line 2.2s ease-in-out infinite;
+}
+.hero-scroll p {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  color: var(--c-muted);
+}
+@keyframes scroll-line {
+  0%   { transform: scaleY(0); transform-origin: top; }
+  50%  { transform: scaleY(1); transform-origin: top; }
+  51%  { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+.hero-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-top: 56px;
+  padding: 24px 0;
+  border-top: 1px solid var(--c-border);
+  border-bottom: 1px solid var(--c-border);
+  animation: fade-up 0.6s ease 0.4s both;
+}
+.hero-stat {
+  flex: 1;
+  text-align: center;
+  padding: 0 32px;
+}
+.hero-stat-num {
+  font-family: var(--font-en);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--c-white);
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.hero-stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+.hero-stat-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--c-border);
+  flex-shrink: 0;
+}
+
+.hero-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 36px;
+  flex-wrap: wrap;
+  animation: fade-up 0.6s ease 0.5s both;
+}
+.hero-flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: rgba(91,95,199,0.07);
+  border: 1px solid rgba(91,95,199,0.18);
+  border-radius: 8px;
+  padding: 10px 18px;
+}
+.hero-flow-num {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--c-accent-3);
+  letter-spacing: 0.1em;
+}
+.hero-flow-name {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--c-text);
+}
+.hero-flow-arrow {
+  color: var(--c-muted);
+  font-size: 0.85rem;
+}
+
+/* ── ボタン ─────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border-radius: var(--radius);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all var(--t);
+  cursor: pointer;
+  border: none;
+  font-family: var(--font-ja);
+}
+.btn-primary {
+  background: var(--c-accent);
+  color: var(--c-white);
+  box-shadow: 0 4px 20px rgba(91,95,199,0.3);
+}
+.btn-primary:hover {
+  background: var(--c-accent-2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(91,95,199,0.45);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--c-text);
+  border: 1px solid var(--c-border-2);
+}
+.btn-ghost:hover {
+  border-color: rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.04);
+  transform: translateY(-2px);
+}
+.btn-full { width: 100%; justify-content: center; }
+
+/* ── セクション共通 ──────────────────── */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-accent-3);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-label::before {
+  content: '';
+  display: block;
+  width: 24px; height: 1px;
+  background: var(--c-accent);
+  opacity: 0.6;
+}
+.section-title {
+  font-family: var(--font-en);
+  font-size: clamp(1.9rem, 3.8vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--c-white);
+  margin-bottom: 18px;
+}
+.section-title-ja {
+  font-family: var(--font-ja);
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  font-weight: 400;
+  color: var(--c-muted-2);
+  margin-bottom: 56px;
+  line-height: 1.8;
+}
+
+/* ── アニメーション ──────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s var(--t), transform 0.7s var(--t);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1.visible { transition-delay: 0.12s; }
+.reveal-delay-2.visible { transition-delay: 0.24s; }
+.reveal-delay-3.visible { transition-delay: 0.36s; }
+
+/* ── About ──────────────────────────── */
+.about { background: var(--c-bg-2); }
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: start;
+}
+.about-lead {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--c-white);
+  margin-bottom: 22px;
+  line-height: 1.65;
+}
+.about-body {
+  color: var(--c-muted-2);
+  line-height: 1.85;
+  margin-bottom: 14px;
+  font-size: 0.95rem;
+}
+.about-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 28px;
+}
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(91,95,199,0.25);
+  color: var(--c-accent-3);
+  background: rgba(91,95,199,0.05);
+  letter-spacing: 0.04em;
+}
+.about-card {
+  position: sticky;
+  top: calc(var(--nav-h) + 24px);
+}
+.about-card-inner {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+.about-card-inner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--c-accent), var(--c-gold));
+}
+.about-card-quote {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--c-muted);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.about-card blockquote {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--c-text);
+  margin-bottom: 22px;
+  font-weight: 400;
+}
+.about-card blockquote strong {
+  color: var(--c-white);
+  font-weight: 600;
+}
+.about-card-note {
+  font-size: 0.78rem;
+  color: var(--c-muted);
+  padding-top: 20px;
+  border-top: 1px solid var(--c-border);
+}
+
+/* ── 3つの顔 ─────────────────────────── */
+.faces { background: var(--c-bg); }
+.faces-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.face-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 36px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--t), border-color var(--t), box-shadow var(--t);
+}
+.face-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+.face-card--surface { border-top: 2px solid var(--c-accent); }
+.face-card--surface:hover { border-color: var(--c-accent); }
+.face-card--core    { border-top: 2px solid var(--c-gold); }
+.face-card--core:hover { border-color: var(--c-gold); }
+.face-card--future  { border-top: 2px solid var(--c-green); }
+.face-card--future:hover { border-color: var(--c-green); }
+.face-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+.face-num {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--c-muted);
+  letter-spacing: 0.08em;
+}
+.face-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--c-muted);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--c-border);
+  padding: 3px 9px;
+  border-radius: 3px;
+  letter-spacing: 0.08em;
+}
+.face-card h3 {
+  font-family: var(--font-en);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--c-white);
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+.face-card-desc {
+  font-size: 0.875rem;
+  color: var(--c-muted-2);
+  line-height: 1.75;
+}
+.face-badge {
+  position: absolute;
+  bottom: 22px; right: 22px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.25;
+}
+.face-card--surface .face-badge { color: var(--c-accent-3); }
+.face-card--core    .face-badge { color: var(--c-gold-2); }
+.face-card--future  .face-badge { color: var(--c-green-2); }
+
+/* ── R&D Process ─────────────────────── */
+.process { background: var(--c-bg-2); }
+
+.process-flow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-bottom: 72px;
+}
+.process-step {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 22px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 0;
+  margin: 0 -1px 0 0;
+  position: relative;
+  transition: background var(--t), border-color var(--t);
+}
+.process-step:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+.process-step:last-child  { border-radius: 0 var(--radius) var(--radius) 0; margin-right: 0; }
+.process-step:hover {
+  background: rgba(91,95,199,0.07);
+  border-color: rgba(91,95,199,0.2);
+  z-index: 1;
+}
+.process-num {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--c-muted);
+  margin-bottom: 16px;
+}
+.process-icon {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(91,95,199,0.1);
+  border-radius: 9px;
+  color: var(--c-accent-3);
+  font-size: 1rem;
+  margin-bottom: 16px;
+}
+.process-step h3 {
+  font-family: var(--font-en);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--c-white);
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+.process-step p {
+  font-size: 0.78rem;
+  color: var(--c-muted-2);
+  line-height: 1.65;
+}
+.process-arrow {
+  position: absolute;
+  top: 50%; right: -13px;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--c-accent);
+  border-radius: 50%;
+  color: var(--c-white);
+  font-size: 0.65rem;
+  box-shadow: 0 2px 8px rgba(91,95,199,0.5);
+}
+.process-arrow--hidden { opacity: 0; pointer-events: none; }
+
+.service-types-title {
+  font-family: var(--font-en);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--c-white);
+  margin-bottom: 28px;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+.service-types-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.service-type {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  text-align: center;
+  transition: transform var(--t), border-color var(--t);
+}
+.service-type:hover {
+  transform: translateY(-4px);
+  border-color: rgba(91,95,199,0.25);
+}
+.service-type-icon {
+  width: 54px; height: 54px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(91,95,199,0.1);
+  border-radius: var(--radius);
+  color: var(--c-accent-3);
+  font-size: 1.3rem;
+  margin: 0 auto 18px;
+}
+.service-type h4 {
+  font-family: var(--font-en);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c-white);
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+.service-type p {
+  font-size: 0.82rem;
+  color: var(--c-muted-2);
+  line-height: 1.65;
+}
+
+/* ── Example ─────────────────────────── */
+.example { background: var(--c-bg); }
+
+.example-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 440px;
+}
+.example-visual {
+  background: linear-gradient(135deg, #0a0a12 0%, #12121e 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+.example-visual::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(91,95,199,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91,95,199,0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.example-diagram {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 320px;
+}
+.ex-node {
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-border-2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  color: var(--c-text);
+  position: relative;
+  transition: border-color var(--t);
+}
+.ex-node:hover { border-color: rgba(91,95,199,0.4); }
+.ex-node-icon {
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.ex-node-icon.purple { background: rgba(91,95,199,0.2); color: var(--c-accent-3); }
+.ex-node-icon.gold   { background: rgba(201,168,76,0.2); color: var(--c-gold-2); }
+.ex-node-icon.green  { background: rgba(45,158,110,0.2); color: var(--c-green-2); }
+.ex-node-label { font-weight: 500; color: var(--c-white); }
+.ex-node-sub { font-size: 0.7rem; color: var(--c-muted); margin-left: auto; font-family: var(--font-mono); }
+.ex-connector {
+  width: 1px; height: 10px;
+  background: linear-gradient(to bottom, var(--c-border-2), transparent);
+  margin: 0 auto 0 22px;
+}
+
+.example-content {
+  padding: 52px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.example-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.example-eyebrow::before {
+  content: '';
+  width: 16px; height: 1px;
+  background: var(--c-gold);
+}
+.example-content h3 {
+  font-family: var(--font-en);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--c-white);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.example-subtitle {
+  font-size: 0.82rem;
+  color: var(--c-muted-2);
+  margin-bottom: 26px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+.example-content p {
+  font-size: 0.9rem;
+  color: var(--c-muted-2);
+  line-height: 1.8;
+  margin-bottom: 28px;
+}
+.example-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 28px;
+}
+.example-process {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--c-muted);
+  flex-wrap: wrap;
+}
+.example-process-step {
+  padding: 4px 10px;
+  background: rgba(91,95,199,0.08);
+  border: 1px solid rgba(91,95,199,0.2);
+  border-radius: 4px;
+  color: var(--c-accent-3);
+}
+.example-process-arrow { color: var(--c-muted); font-size: 0.6rem; }
+
+/* ── Value ──────────────────────────── */
+.value { background: var(--c-bg-2); }
+
+.value-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 48px;
+}
+.value-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  position: relative;
+  overflow: hidden;
+}
+.value-card--juuno {
+  border-color: rgba(91,95,199,0.25);
+}
+.value-card--juuno::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--c-accent), var(--c-accent-3));
+}
+.value-card-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  margin-bottom: 20px;
+}
+.value-card-label.juuno-label {
+  color: var(--c-accent-3);
+}
+
+.compare-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 24px;
+}
+.compare-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.025);
+  border-radius: 7px;
+  border: 1px solid var(--c-border);
+}
+.compare-step-name {
+  font-size: 0.83rem;
+  color: var(--c-muted-2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.compare-step-name i { color: var(--c-muted); width: 14px; font-size: 0.8rem; }
+.compare-step-time {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--c-text);
+}
+
+.compare-total-box {
+  background: rgba(239,68,68,0.07);
+  border: 1px solid rgba(239,68,68,0.18);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.compare-total-label { font-size: 0.82rem; color: #f87171; font-weight: 500; }
+.compare-total-val { font-size: 1rem; font-weight: 700; color: #f87171; font-family: var(--font-mono); }
+.compare-note { font-size: 0.75rem; color: var(--c-muted); text-align: right; }
+
+.juuno-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.juuno-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 13px;
+  background: rgba(91,95,199,0.05);
+  border: 1px solid rgba(91,95,199,0.12);
+  border-radius: 7px;
+  font-size: 0.83rem;
+  color: var(--c-text);
+}
+.juuno-item i { color: var(--c-accent-3); font-size: 0.75rem; }
+.juuno-item-time {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--c-green-2);
+  margin-left: auto;
+}
+
+.juuno-total-box {
+  background: rgba(91,95,199,0.1);
+  border: 1px solid rgba(91,95,199,0.25);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.juuno-total-box p { font-size: 0.78rem; color: var(--c-muted-2); margin-bottom: 4px; }
+.juuno-total-box strong {
+  font-family: var(--font-en);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--c-white);
+  letter-spacing: -0.01em;
+}
+
+.value-message {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 36px 44px;
+  text-align: center;
+}
+.value-message p {
+  font-size: 1.05rem;
+  color: var(--c-muted-2);
+  line-height: 1.85;
+}
+.value-message strong { color: var(--c-white); font-weight: 600; }
+
+/* ── Contact ─────────────────────────── */
+.contact { background: var(--c-bg); }
+.contact-wrapper { max-width: 600px; margin: 0 auto; }
+.contact-form { display: flex; flex-direction: column; gap: 18px; }
+.form-group { display: flex; flex-direction: column; gap: 7px; }
+.form-group label { font-size: 0.85rem; font-weight: 500; color: var(--c-text); }
+.required { color: #f87171; font-size: 0.72rem; margin-left: 2px; }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border-2);
+  border-radius: var(--radius);
+  padding: 11px 15px;
+  font-size: 0.9rem;
+  font-family: var(--font-ja);
+  color: var(--c-text);
+  width: 100%;
+  transition: border-color var(--t), box-shadow var(--t);
+  appearance: none;
+  -webkit-appearance: none;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: rgba(107,107,126,0.7); }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px rgba(91,95,199,0.12);
+}
+.form-group input.error,
+.form-group textarea.error { border-color: #f87171; }
+.form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6b7e' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  padding-right: 38px;
+  color: var(--c-muted);
+}
+.form-group select:valid,
+.form-group select.has-value { color: var(--c-text); }
+
+.contact-success {
+  text-align: center;
+  padding: 60px 40px;
+  background: var(--c-surface);
+  border: 1px solid rgba(45,158,110,0.25);
+  border-radius: var(--radius-lg);
+}
+.success-icon { font-size: 2.8rem; color: var(--c-green-2); margin-bottom: 18px; }
+.contact-success h3 { font-size: 1.4rem; font-weight: 700; color: var(--c-white); margin-bottom: 10px; }
+.contact-success p { color: var(--c-muted-2); }
+
+/* ── Footer ─────────────────────────── */
+.footer {
+  background: var(--c-bg);
+  border-top: 1px solid var(--c-border);
+  padding: 48px 0 32px;
+}
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.footer-logo {
+  font-family: var(--font-en);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--c-white);
+  margin-bottom: 6px;
+}
+.footer-brand p { font-size: 0.78rem; color: var(--c-muted); }
+.footer-nav { display: flex; gap: 22px; flex-wrap: wrap; }
+.footer-nav a {
+  font-family: var(--font-en);
+  font-size: 0.82rem;
+  color: var(--c-muted);
+  transition: color var(--t);
+}
+.footer-nav a:hover { color: var(--c-text); }
+.footer-bottom {
+  border-top: 1px solid var(--c-border);
+  padding-top: 22px;
+  text-align: center;
+}
+.footer-bottom p { font-size: 0.75rem; color: var(--c-muted); font-family: var(--font-mono); }
+
+/* ── Responsive ─────────────────────── */
+@media (max-width: 900px) {
+  .faces-grid { grid-template-columns: 1fr; gap: 14px; }
+  .process-flow {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .process-step { border-radius: 0 !important; margin: 0 0 -1px 0 !important; }
+  .process-step:first-child { border-radius: var(--radius) var(--radius) 0 0 !important; }
+  .process-step:last-child  { border-radius: 0 0 var(--radius) var(--radius) !important; }
+  .process-arrow {
+    top: auto; right: auto;
+    bottom: -13px; left: 50%;
+    transform: translateX(-50%) rotate(90deg);
+  }
+  .process-arrow--hidden { display: none; }
+  .service-types-grid { grid-template-columns: 1fr; }
+  .value-grid { grid-template-columns: 1fr; }
+  .about-grid { grid-template-columns: 1fr; gap: 36px; }
+  .about-card { position: static; }
+  .example-card { grid-template-columns: 1fr; }
+  .example-visual { min-height: 280px; }
+  .example-content { padding: 36px 32px; }
+}
+
+@media (max-width: 768px) {
+  .section { padding: 72px 0; }
+  .nav-toggle { display: flex; }
+  .nav-menu {
+    position: fixed;
+    inset: 0; top: var(--nav-h);
+    background: rgba(8,8,10,0.97);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transform: translateX(100%);
+    transition: transform var(--t);
+    z-index: 999;
+  }
+  .nav-menu.open { transform: translateX(0); }
+  .nav-menu a { font-size: 1.1rem !important; }
+  .sp-only { display: inline; }
+}
+
+@media (max-width: 480px) {
+  .hero-actions { flex-direction: column; align-items: center; }
+  .btn { width: 100%; justify-content: center; }
+  .compare-step { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+  .value-message { padding: 28px 24px; }
+}
+  </style>
+</head>
+<body>
+
+  <!-- ナビ -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo">JUUNO<span></span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="メニュー">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="#about">About</a></li>
+        <li><a href="#faces">Identity</a></li>
+        <li><a href="#process">R&amp;D Process</a></li>
+        <li><a href="#example">Example</a></li>
+        <li><a href="#value">Value</a></li>
+        <li><a href="#contact" class="nav-cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-grid"></div>
+      <div class="hero-glow hero-glow-1"></div>
+      <div class="hero-glow hero-glow-2"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Research &amp; Development Studio</div>
+      <h1 class="hero-title">
+        Discover. Architect.<br />Prototype. Patent.
+      </h1>
+      <p class="hero-title-ja">
+        現場の課題を構造化し、<em>試作と知財化まで</em><br class="sp-only" />一体で担う研究開発会社です。
+      </p>
+      <div class="hero-actions">
+        <a href="#about" class="btn btn-primary">詳しく見る</a>
+        <a href="#contact" class="btn btn-ghost">お問い合わせ</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num">4+</div>
+          <div class="hero-stat-label">Patents Filed</div>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">1社</div>
+          <div class="hero-stat-label">All-in-One R&amp;D</div>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">AI × AR</div>
+          <div class="hero-stat-label">Core Technology</div>
+        </div>
+      </div>
+
+      <div class="hero-flow">
+        <div class="hero-flow-step">
+          <span class="hero-flow-num">01</span>
+          <span class="hero-flow-name">課題抽出</span>
+        </div>
+        <div class="hero-flow-arrow">→</div>
+        <div class="hero-flow-step">
+          <span class="hero-flow-num">02</span>
+          <span class="hero-flow-name">構造設計</span>
+        </div>
+        <div class="hero-flow-arrow">→</div>
+        <div class="hero-flow-step">
+          <span class="hero-flow-num">03</span>
+          <span class="hero-flow-name">試作</span>
+        </div>
+        <div class="hero-flow-arrow">→</div>
+        <div class="hero-flow-step">
+          <span class="hero-flow-num">04</span>
+          <span class="hero-flow-name">知財化</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="hero-scroll">
+      <span></span>
+      <p>Scroll</p>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="about section" id="about">
+    <div class="container">
+      <div class="section-label">About JUUNO</div>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <h2 class="section-title">JUUNOとは<br />何をしているか。</h2>
+          <p class="about-lead">
+            現場課題を仕組みに変え、試作と知財化まで行う研究開発会社です。
+          </p>
+          <p class="about-body">
+            AI・AR・センシング等を活用した新製品・新サービスの研究開発を行っています。
+            構想立案から試作、知財化までを一体で進め、将来の事業化・ライセンス展開につながる技術資産を創出します。
+          </p>
+          <p class="about-body">
+            通常であれば複数社に分業される工程——課題抽出、構造設計、システム設計、試作、特許化——を
+            ワンストップで担います。
+          </p>
+          <div class="about-tags">
+            <span class="tag">AI</span>
+            <span class="tag">AR</span>
+            <span class="tag">Sensing</span>
+            <span class="tag">Structural Design</span>
+            <span class="tag">IP</span>
+            <span class="tag">Prototype</span>
+          </div>
+        </div>
+        <div class="about-card reveal reveal-delay-1">
+          <div class="about-card-inner">
+            <div class="about-card-quote">Core Definition</div>
+            <blockquote>
+              JUUNOは、<br />
+              <strong>R&amp;D ＋ 設計 ＋ プロトタイプ ＋ 知財</strong><br />
+              全部です。
+            </blockquote>
+            <p class="about-card-note">構造設計と知財を核にしたR&D会社</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Identity -->
+  <section class="faces section" id="faces">
+    <div class="container">
+      <div class="section-label">Identity</div>
+      <h2 class="section-title">JUUNOの3つの顔</h2>
+      <p class="section-title-ja">異なるステークホルダーに向けた、3つの定義</p>
+      <div class="faces-grid">
+        <div class="face-card face-card--surface reveal">
+          <div class="face-card-header">
+            <span class="face-num">01</span>
+            <span class="face-label">Surface</span>
+          </div>
+          <h3>技術企画・<br />研究開発会社</h3>
+          <p class="face-card-desc">補助金・行政・パートナー企業向けの顔。AI・AR・センシングを活用した新製品・新サービスの研究開発を行う技術開発会社として機能します。</p>
+          <div class="face-badge">Surface</div>
+        </div>
+        <div class="face-card face-card--core reveal reveal-delay-1">
+          <div class="face-card-header">
+            <span class="face-num">02</span>
+            <span class="face-label">Core</span>
+          </div>
+          <h3>知財創出型<br />R&amp;Dスタジオ</h3>
+          <p class="face-card-desc">現場課題を構造化し、運用支援システムとして試作・知財化するR&D組織。課題発見から特許権利化まで、一気通貫で動く研究開発の実態です。</p>
+          <div class="face-badge">Core</div>
+        </div>
+        <div class="face-card face-card--future reveal reveal-delay-2">
+          <div class="face-card-header">
+            <span class="face-num">03</span>
+            <span class="face-label">Future</span>
+          </div>
+          <h3>構造発明の<br />事業化・ライセンス化</h3>
+          <p class="face-card-desc">創出した技術資産を事業化し、ライセンス展開するプラットフォームへ。知財ポートフォリオを通じた価値転換を目指します。</p>
+          <div class="face-badge">Future</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- R&D Process -->
+  <section class="process section" id="process">
+    <div class="container">
+      <div class="section-label">R&amp;D Process</div>
+      <h2 class="section-title">JUUNO R&amp;D Process</h2>
+      <p class="section-title-ja">コンサル・設計・開発・知財を分業せず、一体で担います。</p>
+
+      <div class="process-flow">
+        <div class="process-step reveal">
+          <div class="process-num">01</div>
+          <div class="process-icon"><i class="fas fa-search"></i></div>
+          <h3>Issue Discovery</h3>
+          <p>現場に潜む本質的な問いを発見。表面的な症状ではなく、構造的な原因を特定します。</p>
+          <div class="process-arrow"><i class="fas fa-arrow-right"></i></div>
+        </div>
+        <div class="process-step reveal reveal-delay-1">
+          <div class="process-num">02</div>
+          <div class="process-icon"><i class="fas fa-sitemap"></i></div>
+          <h3>Architecture</h3>
+          <p>課題を仕組みとして再定義。AI・AR・センシング等の技術を組み合わせた解決構造を設計します。</p>
+          <div class="process-arrow"><i class="fas fa-arrow-right"></i></div>
+        </div>
+        <div class="process-step reveal reveal-delay-2">
+          <div class="process-num">03</div>
+          <div class="process-icon"><i class="fas fa-microchip"></i></div>
+          <h3>Prototype</h3>
+          <p>動くものとして具現化。プロトタイプを通じて仮説を検証し、実用レベルへ引き上げます。</p>
+          <div class="process-arrow"><i class="fas fa-arrow-right"></i></div>
+        </div>
+        <div class="process-step reveal reveal-delay-3">
+          <div class="process-num">04</div>
+          <div class="process-icon"><i class="fas fa-certificate"></i></div>
+          <h3>IP &amp; Patent</h3>
+          <p>技術的優位性を特許等の知的財産として権利化。将来の事業化・ライセンス展開の基盤を築きます。</p>
+          <div class="process-arrow process-arrow--hidden"></div>
+        </div>
+      </div>
+
+      <div class="service-types">
+        <h3 class="service-types-title">対応案件</h3>
+        <div class="service-types-grid">
+          <div class="service-type reveal">
+            <div class="service-type-icon"><i class="fas fa-lightbulb"></i></div>
+            <h4>Concept Design</h4>
+            <p>課題の構造化と解決アーキテクチャの設計</p>
+          </div>
+          <div class="service-type reveal reveal-delay-1">
+            <div class="service-type-icon"><i class="fas fa-flask"></i></div>
+            <h4>Prototype + IP</h4>
+            <p>実動するプロトタイプと知財化のセット</p>
+          </div>
+          <div class="service-type reveal reveal-delay-2">
+            <div class="service-type-icon"><i class="fas fa-rocket"></i></div>
+            <h4>New Business</h4>
+            <p>構想から事業化・ライセンス化まで一体対応</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Example -->
+  <section class="example section" id="example">
+    <div class="container">
+      <div class="section-label">Example Project</div>
+      <h2 class="section-title">R&amp;Dの実例</h2>
+      <p class="section-title-ja">課題の発見から知財化まで、JUUNOの動き方</p>
+      <div class="example-card reveal">
+        <div class="example-visual">
+          <div class="example-diagram">
+            <div class="ex-node">
+              <div class="ex-node-icon purple"><i class="fas fa-eye"></i></div>
+              <div>
+                <div class="ex-node-label">AR Camera Layer</div>
+              </div>
+              <div class="ex-node-sub">Real-time</div>
+            </div>
+            <div class="ex-connector"></div>
+            <div class="ex-node">
+              <div class="ex-node-icon gold"><i class="fas fa-users"></i></div>
+              <div>
+                <div class="ex-node-label">Human Flow Analysis</div>
+              </div>
+              <div class="ex-node-sub">LLM + CV</div>
+            </div>
+            <div class="ex-connector"></div>
+            <div class="ex-node">
+              <div class="ex-node-icon green"><i class="fas fa-shield-alt"></i></div>
+              <div>
+                <div class="ex-node-label">Risk &amp; Alert Engine</div>
+              </div>
+              <div class="ex-node-sub">Auto</div>
+            </div>
+            <div class="ex-connector"></div>
+            <div class="ex-node">
+              <div class="ex-node-icon purple"><i class="fas fa-file-alt"></i></div>
+              <div>
+                <div class="ex-node-label">Audit Log &amp; Report</div>
+              </div>
+              <div class="ex-node-sub">Patent</div>
+            </div>
+          </div>
+        </div>
+        <div class="example-content">
+          <div class="example-eyebrow">Case Study</div>
+          <h3>Event Safety<br />Management System</h3>
+          <p class="example-subtitle">AR × LLM × Human Flow</p>
+          <p>
+            大規模イベント会場での群衆リスク管理という現場課題に着目。AR技術と人流解析、LLMを組み合わせた安全管理システムを構造設計し、プロトタイプ開発と特許出願まで一体で完遂しました。
+          </p>
+          <div class="example-tags">
+            <span class="tag">AR</span>
+            <span class="tag">LLM</span>
+            <span class="tag">Computer Vision</span>
+            <span class="tag">特許出願済</span>
+          </div>
+          <div class="example-process">
+            <span class="example-process-step">課題抽出</span>
+            <span class="example-process-arrow">→</span>
+            <span class="example-process-step">構造設計</span>
+            <span class="example-process-arrow">→</span>
+            <span class="example-process-step">試作</span>
+            <span class="example-process-arrow">→</span>
+            <span class="example-process-step">知財化</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Value -->
+  <section class="value section" id="value">
+    <div class="container">
+      <div class="section-label">Value</div>
+      <h2 class="section-title">なぜJUUNOか。</h2>
+      <p class="section-title-ja">一体型R&Dが生み出す、スピードと確度の違い</p>
+
+      <div class="value-grid">
+        <div class="value-card reveal">
+          <div class="value-card-label">通常の分業体制</div>
+          <div class="compare-steps">
+            <div class="compare-step">
+              <div class="compare-step-name"><i class="fas fa-comments"></i> コンサル</div>
+              <div class="compare-step-time">2〜4ヶ月</div>
+            </div>
+            <div class="compare-step">
+              <div class="compare-step-name"><i class="fas fa-drafting-compass"></i> システム設計</div>
+              <div class="compare-step-time">3〜5ヶ月</div>
+            </div>
+            <div class="compare-step">
+              <div class="compare-step-name"><i class="fas fa-code"></i> 開発</div>
+              <div class="compare-step-time">6〜18ヶ月</div>
+            </div>
+            <div class="compare-step">
+              <div class="compare-step-name"><i class="fas fa-file-alt"></i> 特許出願</div>
+              <div class="compare-step-time">3〜6ヶ月</div>
+            </div>
+          </div>
+          <div class="compare-total-box">
+            <span class="compare-total-label">合計期間</span>
+            <span class="compare-total-val">14〜33ヶ月+</span>
+          </div>
+          <div class="compare-note">3〜4社への発注・調整コストが発生</div>
+        </div>
+
+        <div class="value-card value-card--juuno reveal reveal-delay-1">
+          <div class="value-card-label juuno-label">JUUNO</div>
+          <div class="juuno-items">
+            <div class="juuno-item">
+              <i class="fas fa-check"></i> 課題抽出
+              <span class="juuno-item-time">同時進行</span>
+            </div>
+            <div class="juuno-item">
+              <i class="fas fa-check"></i> 構造設計
+              <span class="juuno-item-time">同時進行</span>
+            </div>
+            <div class="juuno-item">
+              <i class="fas fa-check"></i> システム設計
+              <span class="juuno-item-time">同時進行</span>
+            </div>
+            <div class="juuno-item">
+              <i class="fas fa-check"></i> 試作・開発
+              <span class="juuno-item-time">並列</span>
+            </div>
+            <div class="juuno-item">
+              <i class="fas fa-check"></i> 特許化
+              <span class="juuno-item-time">並列</span>
+            </div>
+          </div>
+          <div class="juuno-total-box">
+            <p>R&amp;D＋設計＋プロトタイプ＋知財 — 全部ワンストップ</p>
+            <strong>発注先は JUUNO 1社のみ</strong>
+          </div>
+          <div class="compare-note" style="color:var(--c-accent-3); text-align:right;">工程間の情報ロスゼロ、意思決定が速い</div>
+        </div>
+      </div>
+
+      <div class="value-message reveal">
+        <p>
+          JUUNOが担うのは、通常<strong>3〜4社分の工程</strong>です。<br />
+          分業では生まれる「情報の断絶」と「調整コスト」を排除することで、<br />
+          <strong>構想から権利化まで、最短で動きます。</strong>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact section" id="contact">
+    <div class="container">
+      <div class="section-label">Contact</div>
+      <h2 class="section-title">まずは、<br />話しましょう。</h2>
+      <p class="section-title-ja">課題の輪郭がまだぼんやりしていても、大丈夫です。<br />JUUNOは「困り事の構造化」から始めます。</p>
+      <div class="contact-wrapper">
+        <form class="contact-form" id="contactForm" novalidate>
+          <div class="form-group">
+            <label for="company">会社名・屋号</label>
+            <input type="text" id="company" name="company" placeholder="株式会社〇〇" />
+          </div>
+          <div class="form-group">
+            <label for="name">お名前 <span class="required">*</span></label>
+            <input type="text" id="name" name="name" placeholder="山田 太郎" required />
+          </div>
+          <div class="form-group">
+            <label for="email">メールアドレス <span class="required">*</span></label>
+            <input type="email" id="email" name="email" placeholder="example@company.com" required />
+          </div>
+          <div class="form-group">
+            <label for="type">相談の種類</label>
+            <select id="type" name="type">
+              <option value="">選択してください</option>
+              <option value="concept">概念設計・課題の構造化</option>
+              <option value="proto">プロトタイプ開発</option>
+              <option value="biz">新規事業開発</option>
+              <option value="patent">知財化・特許</option>
+              <option value="other">その他・まだ決まっていない</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">課題・相談内容 <span class="required">*</span></label>
+            <textarea id="message" name="message" rows="5" placeholder="困っていること、やりたいことをざっくりと教えてください。" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
+            <span>送信する</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </form>
+        <div class="contact-success" id="contactSuccess" style="display:none;">
+          <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+          <h3>送信しました。</h3>
+          <p>内容を確認のうえ、担当者よりご連絡いたします。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo">JUUNO</div>
+          <p>構造設計と知財を核にしたR&D会社</p>
+        </div>
+        <nav class="footer-nav">
+          <a href="#about">About</a>
+          <a href="#faces">Identity</a>
+          <a href="#process">Process</a>
+          <a href="#example">Example</a>
+          <a href="#value">Value</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 JUUNO / Gōdō-gaisha JUUNO. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* ── Nav ── */
+  const nav       = document.getElementById('nav');
+  const navToggle = document.getElementById('navToggle');
+  const navMenu   = document.getElementById('navMenu');
+  const navLinks  = navMenu.querySelectorAll('a');
+
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 40);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  navToggle.addEventListener('click', () => {
+    const open = navMenu.classList.toggle('open');
+    navToggle.classList.toggle('active', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  navLinks.forEach(l => l.addEventListener('click', () => {
+    navMenu.classList.remove('open');
+    navToggle.classList.remove('active');
+    document.body.style.overflow = '';
+  }));
+
+  const sections = document.querySelectorAll('section[id]');
+  const hlNav = () => {
+    const y = window.scrollY + 100;
+    sections.forEach(s => {
+      const link = navMenu.querySelector(`a[href="#${s.id}"]`);
+      if (link) link.style.color = y >= s.offsetTop && y < s.offsetTop + s.offsetHeight ? 'var(--c-white)' : '';
+    });
+  };
+  window.addEventListener('scroll', hlNav, { passive: true });
+
+  /* ── Scroll reveal ── */
+  const revealObs = new IntersectionObserver(
+    entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } }),
+    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+  );
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+  /* ── Smooth scroll ── */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id === '#') return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 68, behavior: 'smooth' });
+    });
+  });
+
+  /* ── Form ── */
+  const form       = document.getElementById('contactForm');
+  const successBox = document.getElementById('contactSuccess');
+  const submitBtn  = document.getElementById('submitBtn');
+  const typeSelect = document.getElementById('type');
+  typeSelect.addEventListener('change', () => typeSelect.classList.toggle('has-value', typeSelect.value !== ''));
+
+  const required = form.querySelectorAll('[required]');
+  const validate = f => {
+    const bad = f.value.trim() === '' || (f.type === 'email' && f.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.value));
+    f.classList.toggle('error', bad);
+    return !bad;
+  };
+  required.forEach(f => {
+    f.addEventListener('blur', () => validate(f));
+    f.addEventListener('input', () => { if (f.classList.contains('error')) validate(f); });
+  });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    let ok = true;
+    required.forEach(f => { if (!validate(f)) ok = false; });
+    if (!ok) return;
+
+    submitBtn.disabled = true;
+    submitBtn.querySelector('span').textContent = '送信中...';
+    submitBtn.querySelector('i').className = 'fas fa-spinner fa-spin';
+
+    try {
+      const data = {
+        company: document.getElementById('company').value.trim(),
+        name:    document.getElementById('name').value.trim(),
+        email:   document.getElementById('email').value.trim(),
+        type:    typeSelect.value,
+        message: document.getElementById('message').value.trim(),
+      };
+      const res = await fetch('tables/contacts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (!res.ok) throw new Error();
+    } catch {}
+
+    form.style.display = 'none';
+    successBox.style.display = 'block';
+    successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  /* ── Textarea counter ── */
+  const ta = document.getElementById('message');
+  if (ta) {
+    const max = 1000;
+    const counter = document.createElement('div');
+    counter.style.cssText = 'font-size:.72rem;color:var(--c-muted);text-align:right;margin-top:4px;font-family:var(--font-mono);';
+    counter.textContent = `0 / ${max}`;
+    ta.parentNode.appendChild(counter);
+    ta.addEventListener('input', () => {
+      const n = ta.value.length;
+      counter.textContent = `${n} / ${max}`;
+      counter.style.color = n > max * 0.9 ? 'var(--c-accent-3)' : 'var(--c-muted)';
+      if (n > max) ta.value = ta.value.slice(0, max);
+    });
+  }
+});
+  </script>
+</body>
+</html>
